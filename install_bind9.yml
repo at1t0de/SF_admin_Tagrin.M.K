@@ -1,0 +1,32 @@
+---
+- hosts: dns_servers
+  become: yes
+
+  tasks:
+    - name: Install BIND on Red Hat
+      yum:
+        name: bind
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Install BIND on Debian
+      apt:
+        name: bind9
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable BIND service on Red Hat
+      systemd:
+        name: named
+        state: started
+        enabled: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Start and enable BIND service on Debian
+      systemd:
+        name: bind9
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+

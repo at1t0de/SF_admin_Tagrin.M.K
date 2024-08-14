@@ -1,0 +1,32 @@
+---
+- hosts: mail_servers
+  become: yes
+
+  tasks:
+    - name: Install Postfix on Red Hat
+      yum:
+        name: postfix
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Postfix on Debian
+      apt:
+        name: postfix
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable Postfix service on Red Hat
+      systemd:
+        name: postfix
+        state: started
+        enabled: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Start and enable Postfix service on Debian
+      systemd:
+        name: postfix
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+

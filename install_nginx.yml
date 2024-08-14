@@ -1,0 +1,24 @@
+---
+- hosts: ubuntu
+  become: yes
+
+  tasks:
+    - name: Install Nginx on Red Hat
+      yum:
+        name: nginx
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Nginx on Debian
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable Nginx service
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
