@@ -1,0 +1,40 @@
+---
+- hosts: ubuntu
+  become: yes
+
+  tasks:
+    - name: Install PHP on Red Hat
+      yum:
+        name: 
+          - php
+          - php-cli
+          - php-mysqlnd
+          - php-fpm
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Install PHP on Debian
+      apt:
+        name: 
+          - php
+          - php-cli
+          - php-mysql
+          - php-fpm
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable PHP-FPM service on Red Hat
+      systemd:
+        name: php-fpm
+        state: started
+        enabled: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Start and enable PHP-FPM service on Debian
+      systemd:
+        name: php{{ ansible_lsb.codename }}-fpm
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+
